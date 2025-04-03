@@ -1,0 +1,2 @@
+# IQArena
+ Juego estilo trivial 

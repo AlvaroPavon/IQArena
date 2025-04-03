@@ -1,0 +1,15 @@
+*.iml
+.gradle
+/local.properties
+/IQArena/.idea/caches
+/IQArena/.idea/libraries
+/IQArena/.idea/modules.xml
+/IQArena/.idea/workspace.xml
+/IQArena/.idea/navEditor.xml
+/IQArena/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
