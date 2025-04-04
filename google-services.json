@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "763814888903",
+    "project_id": "iqarena-743b4",
+    "storage_bucket": "iqarena-743b4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763814888903:android:8f91be50f7186435e185e2",
+        "android_client_info": {
+          "package_name": "com.azrael.iqarena"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763814888903-fq859jaasaagh2cu6hl6adba6raunlnp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.azrael.iqarena",
+            "certificate_hash": "96921132a13fedb4ff51e3aa07938d8599ec9778"
+          }
+        },
+        {
+          "client_id": "763814888903-lr76k6n9ggvrkbuqijcmhp73vh8bb12d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5VCJ0OJEg02Mx21G3X1X48nWlHMAoH-o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763814888903-lr76k6n9ggvrkbuqijcmhp73vh8bb12d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

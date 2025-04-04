@@ -1,9 +1,11 @@
 package com.azrael.iqarena.ui.registration
 
 import android.app.Activity
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -13,7 +15,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.azrael.iqarena.R
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GoogleSignInScreen(onSignInSuccess: () -> Unit, usuarioViewModel: UsuarioViewModel) {
     val context = LocalContext.current
@@ -21,7 +25,7 @@ fun GoogleSignInScreen(onSignInSuccess: () -> Unit, usuarioViewModel: UsuarioVie
 
     // Configuración de Google Sign-In: asegúrate de tener el default_web_client_id en strings.xml
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(context.getString(R.string.default_web_client_id))
+        .requestIdToken(context.getString(R.string.web_client))
         .requestEmail()
         .build()
 
