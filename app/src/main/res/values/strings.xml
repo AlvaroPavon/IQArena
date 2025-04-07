@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">IQ ARENA</string>
-    <string name="web_client">763814888903-lr76k6n9ggvrkbuqijcmhp73vh8bb12d.apps.googleusercontent.com</string>
+        <string name="app_name">IQ ARENA</string>
+        <string name="default_web_client_id"><![CDATA[a763814888903-fq859jaasaagh2cu6hl6adba6raunlnp.apps.googleusercontent.com]]></string>
 </resources>

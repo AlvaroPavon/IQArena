@@ -15,8 +15,8 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = Color.Black
 )
 
-private val AppTypography = Typography() // Tipografía por defecto de Material3
-private val AppShapes = Shapes()         // Formas por defecto de Material3
+private val AppTypography = Typography()
+private val AppShapes = Shapes()
 
 @Composable
 fun IqarenaTheme(content: @Composable () -> Unit) {

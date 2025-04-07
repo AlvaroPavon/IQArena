@@ -1,4 +1,4 @@
-package com.azrael.iqarena.ui.registration
+package com.azrael.iqarena.ui.login
 
 import android.app.Activity
 import android.util.Log
@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.azrael.iqarena.R
-import com.azrael.iqarena.model.Usuario
 import com.azrael.iqarena.viewmodel.UsuarioViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -36,15 +35,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
-const val GOOGLE_CLIENT_ID = "763814888903-fq859jaasaagh2cu6hl6adba6raunlnp.apps.googleusercontent.com"
-
 @Composable
-fun RegistrationScreen(
+fun LoginScreen(
     usuarioViewModel: UsuarioViewModel,
-    onRegistrationSuccess: () -> Unit,
-    onNavigateToLogin: () -> Unit
+    onLoginSuccess: () -> Unit,
+    onNavigateToRegister: () -> Unit,
+    onNavigateToCompleteGoogleRegistration: () -> Unit
 ) {
-    var nombre by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
     var mensaje by remember { mutableStateOf("") }
@@ -52,9 +49,13 @@ fun RegistrationScreen(
     val usuarioState = usuarioViewModel.usuario.collectAsState()
 
     LaunchedEffect(usuarioState.value) {
-        if (usuarioState.value != null) {
-            mensaje = "Registro exitoso"
-            onRegistrationSuccess()
+        usuarioState.value?.let { user ->
+            // Si la contraseña está vacía, asumimos que el registro con Google está incompleto
+            if (user.contrasena.isEmpty()) {
+                onNavigateToCompleteGoogleRegistration()
+            } else {
+                onLoginSuccess()
+            }
         }
     }
 
@@ -65,15 +66,8 @@ fun RegistrationScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Registro de Usuario", style = MaterialTheme.typography.headlineSmall)
+        Text(text = "Iniciar Sesión", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it },
-            label = { Text("Nombre") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -89,37 +83,32 @@ fun RegistrationScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = {
-                // Se crea el usuario en orden: id = null, nombre, email, contrasena, puntosXp = 0, fechaRegistro = null, avatar = null.
-                usuarioViewModel.registrarUsuario(
-                    Usuario(null, nombre, email, contrasena, 0, null, null)
-                )
-            },
+            onClick = { usuarioViewModel.loginUsuario(email, contrasena) },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Registrar")
+            Text("Iniciar Sesión")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        // Botón integrado para el inicio de sesión con Google sin navegar a otra pantalla
-        GoogleSignInButton(onSignInSuccess = onRegistrationSuccess, usuarioViewModel = usuarioViewModel)
+        GoogleSignInButton(onSignIn = {
+            // No se realiza navegación aquí; el LaunchedEffect controlará la navegación
+        }, usuarioViewModel = usuarioViewModel)
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = mensaje)
         Spacer(modifier = Modifier.height(16.dp))
-        TextButton(onClick = onNavigateToLogin) {
-            Text("¿Ya tienes cuenta? Inicia sesión")
+        TextButton(onClick = onNavigateToRegister) {
+            Text("¿No tienes cuenta? Regístrate")
         }
     }
 }
 
 @Composable
-fun GoogleSignInButton(onSignInSuccess: () -> Unit, usuarioViewModel: UsuarioViewModel) {
+fun GoogleSignInButton(onSignIn: () -> Unit, usuarioViewModel: UsuarioViewModel) {
     val context = LocalContext.current
     val firebaseAuth = FirebaseAuth.getInstance()
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(context.getString(R.string.default_web_client_id))
         .requestEmail()
         .build()
-
     val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(context, gso)
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -129,14 +118,19 @@ fun GoogleSignInButton(onSignInSuccess: () -> Unit, usuarioViewModel: UsuarioVie
             try {
                 val account = task.getResult(Exception::class.java)
                 val idToken = account?.idToken
+                if (idToken == null) {
+                    Log.e("GoogleSignIn", "idToken is null")
+                    return@rememberLauncherForActivityResult
+                }
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
                 firebaseAuth.signInWithCredential(credential)
                     .addOnCompleteListener { authTask ->
                         if (authTask.isSuccessful) {
                             val nombreGoogle = account?.displayName ?: ""
                             val emailGoogle = account?.email ?: ""
+                            // Se registra el usuario vía Google (con contraseña vacía para indicar registro incompleto)
                             usuarioViewModel.registrarUsuarioGoogle(nombreGoogle, emailGoogle)
-                            onSignInSuccess()
+                            onSignIn()
                         } else {
                             Log.e("GoogleSignIn", "Error en autenticación: ${authTask.exception}")
                         }
@@ -144,6 +138,8 @@ fun GoogleSignInButton(onSignInSuccess: () -> Unit, usuarioViewModel: UsuarioVie
             } catch (e: Exception) {
                 Log.e("GoogleSignIn", "Error al obtener cuenta de Google", e)
             }
+        } else {
+            Log.e("GoogleSignIn", "Result code not OK: ${result.resultCode}")
         }
     }
 
@@ -154,6 +150,6 @@ fun GoogleSignInButton(onSignInSuccess: () -> Unit, usuarioViewModel: UsuarioVie
         },
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text("Registrarse con Google")
+        Text("Iniciar sesión con Google")
     }
 }

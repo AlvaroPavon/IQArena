@@ -28,29 +28,17 @@ fun DashboardScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Bienvenido a IQ ARENA - Dashboard",
-            style = MaterialTheme.typography.headlineSmall
-        )
+        Text(text = "Bienvenido a IQ ARENA - Dashboard", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = onStartGame,
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Button(onClick = onStartGame, modifier = Modifier.fillMaxWidth()) {
             Text("Iniciar Partida")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = onViewProfile,
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Button(onClick = onViewProfile, modifier = Modifier.fillMaxWidth()) {
             Text("Ver Perfil")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = onCreateTema,
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Button(onClick = onCreateTema, modifier = Modifier.fillMaxWidth()) {
             Text("Crear Tema")
         }
     }

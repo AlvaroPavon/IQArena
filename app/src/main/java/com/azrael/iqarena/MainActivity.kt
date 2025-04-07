@@ -16,10 +16,7 @@ class MainActivity : ComponentActivity() {
             IqarenaTheme {
                 val navController = rememberNavController()
                 val usuarioViewModel: UsuarioViewModel = viewModel()
-                NavGraph(
-                    navController = navController,
-                    usuarioViewModel = usuarioViewModel
-                )
+                NavGraph(navController = navController, usuarioViewModel = usuarioViewModel)
             }
         }
     }

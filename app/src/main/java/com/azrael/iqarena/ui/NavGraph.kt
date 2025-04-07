@@ -7,7 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.azrael.iqarena.ui.dashboard.DashboardScreen
 import com.azrael.iqarena.ui.game.GameScreen
+import com.azrael.iqarena.ui.login.LoginScreen
 import com.azrael.iqarena.ui.profile.ProfileScreen
+import com.azrael.iqarena.ui.registration.CompleteGoogleRegistrationScreen
 import com.azrael.iqarena.ui.registration.RegistrationScreen
 import com.azrael.iqarena.ui.tema.CreateTemaScreen
 import com.azrael.iqarena.viewmodel.PreguntaViewModel
@@ -15,7 +17,9 @@ import com.azrael.iqarena.viewmodel.TemaViewModel
 import com.azrael.iqarena.viewmodel.UsuarioViewModel
 
 sealed class Screen(val route: String) {
+    object Login : Screen("login")
     object Registration : Screen("registration")
+    object CompleteGoogleRegistration : Screen("completeGoogleRegistration")
     object Dashboard : Screen("dashboard")
     object Game : Screen("game")
     object Profile : Screen("profile")
@@ -26,13 +30,26 @@ sealed class Screen(val route: String) {
 fun NavGraph(navController: NavHostController, usuarioViewModel: UsuarioViewModel) {
     val preguntaViewModel: PreguntaViewModel = viewModel()
     val temaViewModel: TemaViewModel = viewModel()
-    NavHost(navController = navController, startDestination = Screen.Registration.route) {
+    NavHost(navController = navController, startDestination = Screen.Login.route) {
+        composable(Screen.Login.route) {
+            LoginScreen(
+                usuarioViewModel = usuarioViewModel,
+                onLoginSuccess = { navController.navigate(Screen.Dashboard.route) },
+                onNavigateToRegister = { navController.navigate(Screen.Registration.route) },
+                onNavigateToCompleteGoogleRegistration = { navController.navigate(Screen.CompleteGoogleRegistration.route) }
+            )
+        }
         composable(Screen.Registration.route) {
             RegistrationScreen(
                 usuarioViewModel = usuarioViewModel,
-                onRegistrationSuccess = {
-                    navController.navigate(Screen.Dashboard.route)
-                }
+                onRegistrationSuccess = { navController.navigate(Screen.Dashboard.route) },
+                onNavigateToLogin = { navController.navigate(Screen.Login.route) }
+            )
+        }
+        composable(Screen.CompleteGoogleRegistration.route) {
+            CompleteGoogleRegistrationScreen(
+                usuarioViewModel = usuarioViewModel,
+                onCompleteSuccess = { navController.navigate(Screen.Dashboard.route) }
             )
         }
         composable(Screen.Dashboard.route) {

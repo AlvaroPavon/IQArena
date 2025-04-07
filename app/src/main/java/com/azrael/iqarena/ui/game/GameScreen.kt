@@ -35,16 +35,10 @@ fun GameScreen(preguntaViewModel: PreguntaViewModel) {
         if (preguntaState.value == null) {
             CircularProgressIndicator()
         } else {
-            Text(
-                text = "Pregunta:",
-                style = MaterialTheme.typography.headlineSmall
-            )
+            Text(text = "Pregunta:", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = preguntaState.value!!.texto,
-                style = MaterialTheme.typography.bodyMedium
-            )
-            // Aquí se pueden agregar botones para opciones de respuesta y lógica de evaluación.
+            Text(text = preguntaState.value!!.texto, style = MaterialTheme.typography.bodyMedium)
+            // Aquí se pueden agregar botones para respuestas y la lógica de evaluación.
         }
     }
 }

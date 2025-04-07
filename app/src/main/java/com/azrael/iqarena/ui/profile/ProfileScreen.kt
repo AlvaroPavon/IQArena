@@ -31,35 +31,17 @@ fun ProfileScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Perfil del Usuario",
-            style = MaterialTheme.typography.headlineSmall
-        )
+        Text(text = "Perfil del Usuario", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(16.dp))
         usuarioState.value?.let { usuario ->
-            Text(
-                text = "Nombre: ${usuario.nombre}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Email: ${usuario.email}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "XP: ${usuario.puntosXp}",
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Text(text = "Nombre: ${usuario.nombre}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Email: ${usuario.email}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "XP: ${usuario.puntosXp}", style = MaterialTheme.typography.bodyMedium)
         } ?: run {
-            Text(
-                text = "No hay usuario registrado",
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Text(text = "No hay usuario registrado", style = MaterialTheme.typography.bodyMedium)
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = { onBack() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
             Text("Volver al Dashboard")
         }
     }

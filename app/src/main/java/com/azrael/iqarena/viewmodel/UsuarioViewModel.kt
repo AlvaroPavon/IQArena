@@ -1,15 +1,13 @@
 package com.azrael.iqarena.viewmodel
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.azrael.iqarena.model.LoginRequest
 import com.azrael.iqarena.model.Usuario
 import com.azrael.iqarena.repository.UsuarioRepository
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.time.LocalDate
+import kotlinx.coroutines.launch
 
 class UsuarioViewModel : ViewModel() {
     private val repository = UsuarioRepository()
@@ -17,29 +15,70 @@ class UsuarioViewModel : ViewModel() {
     private val _usuario = MutableStateFlow<Usuario?>(null)
     val usuario: StateFlow<Usuario?> = _usuario
 
-    fun registrarUsuario(usuario: Usuario) {
+    fun loginUsuario(email: String, contrasena: String) {
+        val loginRequest = LoginRequest(email, contrasena)
         viewModelScope.launch {
-            val response = repository.registrarUsuario(usuario)
-            _usuario.value = if (response.isSuccessful) response.body() else null
+            try {
+                val response = repository.loginUsuario(loginRequest)
+                if (response.isSuccessful) {
+                    _usuario.value = response.body()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
-    // Función para registrar usuarios de Google
-    @RequiresApi(Build.VERSION_CODES.O)
+    fun registrarUsuario(usuario: Usuario) {
+        viewModelScope.launch {
+            try {
+                val response = repository.registrarUsuario(usuario)
+                if (response.isSuccessful) {
+                    _usuario.value = response.body()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun registrarUsuarioGoogle(nombre: String, email: String) {
-        // Como no tenemos contraseña, asignamos un valor vacío o un valor predeterminado
+        // Registro inicial vía Google: se guarda el nombre y email, pero la contraseña queda vacía
         val usuarioGoogle = Usuario(
+            id = null,
             nombre = nombre,
             email = email,
-            contrasena = "",  // Opcional: podrías asignar "google" o similar
+            contrasena = "", // Indica que el registro está incompleto
             puntosXp = 0,
-            // Asigna la fecha actual en formato ISO si lo deseas; aquí lo dejamos nulo para que lo genere el back-end
-            fechaRegistro = LocalDate.now().toString(),
-            avatar = null // Puedes asignar un avatar por defecto
+            fechaRegistro = System.currentTimeMillis(),
+            avatar = null
         )
         viewModelScope.launch {
-            val response = repository.registrarUsuario(usuarioGoogle)
-            _usuario.value = if (response.isSuccessful) response.body() else null
+            try {
+                val response = repository.registrarUsuario(usuarioGoogle)
+                if (response.isSuccessful) {
+                    _usuario.value = response.body()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun completeGoogleRegistration(nombre: String, contrasena: String, onComplete: () -> Unit) {
+        val currentUser = _usuario.value
+        if (currentUser != null) {
+            val updatedUser = currentUser.copy(
+                nombre = nombre,
+                contrasena = contrasena,
+                fechaRegistro = System.currentTimeMillis()
+            )
+            viewModelScope.launch {
+                // Aquí se debería llamar a un endpoint PUT para actualizar el usuario.
+                // Por simplicidad, simulamos que la actualización es exitosa.
+                _usuario.value = updatedUser
+                onComplete()
+            }
         }
     }
 }
